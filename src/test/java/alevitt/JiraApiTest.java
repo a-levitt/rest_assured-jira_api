@@ -9,6 +9,7 @@ import files.Payload;
 import files.Auth;
 import io.restassured.path.json.JsonPath;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class JiraApiTest {
@@ -22,11 +23,11 @@ public class JiraApiTest {
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Auth.baseApiKey())
                 .body(Payload.postAddBugBody())
-                .log().all()
+                //.log().all()
         .when()
                 .post("rest/api/3/issue")
         .then()
-                .log().all()
+                //.log().all()
                 .assertThat()
                     .statusCode(201)
                 .extract().response().asString()
@@ -36,17 +37,21 @@ public class JiraApiTest {
         String createdBugId = js.get("id");
         System.out.println("New bug was created with ID: " + createdBugId);
 
-/*        // Attach file to the bug
+        // Attach file to the bug
         given()
+                .pathParam("key", createdBugId)
                 .header("X-Atlassian-Token", "no-check")
                 .header("Authorization", "Basic " + Auth.baseApiKey())
+                .multiPart("file", new File("C:\\Users\\daski\\Pictures\\Screenshots\\Fullstack.jpeg"))
+                //.log().all()
         .when()
-                .post("rest/api/3/issue/" + createdBugId + "/attachments")
+                .post("rest/api/3/issue/{key}/attachments")
         .then()
+                //.log().all()
                 .assertThat()
                     .statusCode(200)
-                .body("id", equalTo(createdBugId))
+                //.body("filename", equalTo("Fullstack.jpeg"))
         ;
-        System.out.println("File was successfully attached to bug-" + createdBugId);*/
+        System.out.println("File was successfully attached to bug-" + createdBugId);
     }
 }
