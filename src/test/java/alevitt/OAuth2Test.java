@@ -16,10 +16,10 @@ public class OAuth2Test {
 
         String response =
                 given()
-                        .multiPart("client_id", Auth.oauth2ClientId())
-                        .multiPart("client_secret", Auth.oauth2ClientSecret())
-                        .multiPart("grant_type", "client_credentials")
-                        .multiPart("scope", "trust")
+                        .formParam("client_id", Auth.oauth2ClientId())
+                        .formParam("client_secret", Auth.oauth2ClientSecret())
+                        .formParam("grant_type", "client_credentials")
+                        .formParam("scope", "trust")
                         //.log().all()
                 .when()
                         .post("oauthapi/oauth2/resourceOwner/token")
