@@ -1,6 +1,6 @@
 package pojo;
 
-public class Pojo {
+public class GetCourse {
     private String url;
     private String services;
     private String expertise;

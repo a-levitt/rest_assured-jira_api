@@ -4,8 +4,11 @@ import files.Auth;
 import files.ReusableMethods;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
+import pojo.Api;
+import pojo.GetCourse;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
@@ -35,19 +38,30 @@ public class OAuth2Test {
         int expiresIn = js.getInt("expires_in");
         System.out.println("Token received. Expires in " + expiresIn + " seconds.");
 
-        // Get courses, using OAuth2 token
-
+        // Get courses, using OAuth2 token | UPD: using pojo class
+        GetCourse jsonObject =
         given()
                 .queryParam("access_token", oauth2Token)
                 //.log().all()
         .when()
-                .get("oauthapi/getCourseDetails")
-        .then()
+                .get("oauthapi/getCourseDetails").as(GetCourse.class)
+        /*.then()
                 .log().all()
                 .assertThat()
-                    .statusCode(401)
+                    .statusCode(401)*/
         ;
+        System.out.println(jsonObject.getInstructor());
+        System.out.println(jsonObject.getLinkedIn());
+        //System.out.println(jsonObject.getCourses().getApi().get(1).getCourseTitle());
 
-        System.out.println("Authorized!");
+        List<Api> apiCourses = jsonObject.getCourses().getApi();
+        for (int i = 0; i < apiCourses.size(); i++) {
+            if (apiCourses.get(i).getCourseTitle().equalsIgnoreCase("SoapUI Webservices testing")) {
+                System.out.println(apiCourses.get(i).getCourseTitle());
+                System.out.println(apiCourses.get(i).getPrice());
+            }
+        }
     }
+
+
 }
